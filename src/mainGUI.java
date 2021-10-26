@@ -1,0 +1,111 @@
+import javax.swing.*;
+import javax.swing.table.DefaultTableColumnModel;
+import javax.swing.table.DefaultTableModel;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+
+public class mainGUI extends JFrame{
+    private JPanel panel1;
+    private JButton addButton;
+    private JTextField a0TextField;
+    private JTextField a0TextField1;
+    private JButton startButton;
+    private JList ReadyQ;
+    private JList All;
+    private JList WaitingQ;
+    private JPanel panel2;
+    private JScrollPane scollpane1;
+    private JScrollPane scrollpane2;
+    private JScrollPane scrollpane3;
+    private boolean running = false;
+    private Scheduler schedule;
+
+    private mainGUI main;
+    private ProcessList pcb;
+    public mainGUI(){
+        pcb = new ProcessList();
+        setContentPane(panel1);
+        setTitle("OS Simulator");
+        setSize(500, 500);
+        setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+        setVisible(true);
+        main = this;
+
+        schedule = new Scheduler(pcb, main);
+        Thread s = new Thread(schedule);
+
+
+        startButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if(startButton.getText().equals("Start")) {
+                    startButton.setText("Stop");
+                    s.start();
+                } else {
+                    startButton.setText("Start");
+
+                }
+            }
+        });
+        addButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                try {
+                    pcb.generateProcesses(getNumberProcess(), getTempNumber());
+                    updateList();
+                    System.out.println("this");
+                } catch (FileNotFoundException ex) {
+                    ex.printStackTrace();
+                } catch (IOException ioException) {
+                    ioException.printStackTrace();
+                }
+            }
+        });
+    }
+
+    public JButton getStartButton(){
+        return startButton;
+    }
+    public static void main(String[] args){
+        mainGUI myFrame = new mainGUI();
+    }
+
+    private int getTempNumber(){
+        return Integer.parseInt(a0TextField1.getText());
+    }
+
+    private int getNumberProcess(){
+        return Integer.parseInt(a0TextField.getText());
+    }
+
+    public void updateList(){
+        DefaultListModel allModel = new DefaultListModel();
+        DefaultListModel readyModel = new DefaultListModel();
+        DefaultListModel waitModel = new DefaultListModel();
+
+        int n = pcb.getList().size();
+        for(int i = 0; i<n; i++){
+            ProcessList.Process p = pcb.getList().get(i);
+            if(p.getState().equals("WAITING")){
+                waitModel.addElement("Process " + p.getNumber() +": " + p.getState() + " " + p.getTotalCycles() + " " + p.getTurnAroundTime());
+                allModel.addElement("Process " + p.getNumber() +": " + p.getState() + " " + p.getTotalCycles() + " " + p.getTurnAroundTime());
+            } else if(p.getState().equals("READY")){
+                readyModel.addElement("Process " + p.getNumber() +": " + p.getState() + " " + p.getTotalCycles() + " " + p.getTurnAroundTime());
+                allModel.addElement("Process " + p.getNumber() +": " + p.getState() + " " + p.getTotalCycles() + " " + p.getTurnAroundTime());
+            } else {
+                allModel.addElement("Process " + p.getNumber() +": " + p.getState() + " " + p.getTotalCycles() + " " + p.getTurnAroundTime());
+            }
+        }
+        n = pcb.getTerminatedList().size();
+        for(int i = 0; i<n; i++) {
+            ProcessList.Process p = pcb.getTerminatedList().get(i);
+            allModel.addElement("Process " + p.getNumber() +": " + p.getState() + " " + p.getTotalCycles() + " " + p.getTurnAroundTime());
+        }
+        ReadyQ.setModel(readyModel);
+        WaitingQ.setModel(waitModel);
+        All.setModel(allModel);
+    }
+}
