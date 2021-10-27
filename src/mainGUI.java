@@ -31,7 +31,7 @@ public class mainGUI extends JFrame{
         pcb = new ProcessList();
         setContentPane(panel1);
         setTitle("OS Simulator");
-        setSize(750, 500);
+        setSize(800, 500);
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         setVisible(true);
         main = this;
