@@ -4,7 +4,6 @@ public class Scheduler implements Runnable {
     private mainGUI main;
     private int cycleCount = 0;
     private int runningProc = 0;
-    private Updater updater;
     private int semaphore = 0;
     private int procCrit = 0;
 
@@ -125,7 +124,7 @@ public class Scheduler implements Runnable {
                 }
                 main.updateList();
                 try {
-                    Thread.sleep(10);
+                    Thread.sleep(2);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }

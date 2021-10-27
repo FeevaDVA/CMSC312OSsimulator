@@ -20,6 +20,8 @@ public class mainGUI extends JFrame{
     private JScrollPane scollpane1;
     private JScrollPane scrollpane2;
     private JScrollPane scrollpane3;
+    private JLabel turnAroundLabel;
+    private JLabel waitTimeLabel;
     private boolean running = false;
     private Scheduler schedule;
 
@@ -29,7 +31,7 @@ public class mainGUI extends JFrame{
         pcb = new ProcessList();
         setContentPane(panel1);
         setTitle("OS Simulator");
-        setSize(500, 500);
+        setSize(750, 500);
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         setVisible(true);
         main = this;
@@ -90,20 +92,31 @@ public class mainGUI extends JFrame{
         for(int i = 0; i<n; i++){
             ProcessList.Process p = pcb.getList().get(i);
             if(p.getState().equals("WAITING")){
-                waitModel.addElement("Process " + p.getNumber() +": " + p.getState() + " " + p.getTotalCycles() + " " + p.getTurnAroundTime());
-                allModel.addElement("Process " + p.getNumber() +": " + p.getState() + " " + p.getTotalCycles() + " " + p.getTurnAroundTime());
+                waitModel.addElement("Process " + p.getNumber() +": " + p.getState() + " " + p.getTotalCycles());
+                allModel.addElement("Process " + p.getNumber() +": " + p.getState() + " " + p.getTotalCycles());
             } else if(p.getState().equals("READY")){
-                readyModel.addElement("Process " + p.getNumber() +": " + p.getState() + " " + p.getTotalCycles() + " " + p.getTurnAroundTime());
-                allModel.addElement("Process " + p.getNumber() +": " + p.getState() + " " + p.getTotalCycles() + " " + p.getTurnAroundTime());
+                readyModel.addElement("Process " + p.getNumber() +": " + p.getState() + " " + p.getTotalCycles());
+                allModel.addElement("Process " + p.getNumber() +": " + p.getState() + " " + p.getTotalCycles());
             } else {
-                allModel.addElement("Process " + p.getNumber() +": " + p.getState() + " " + p.getTotalCycles() + " " + p.getTurnAroundTime());
+                allModel.addElement("Process " + p.getNumber() +": " + p.getState() + " " + p.getTotalCycles());
             }
         }
         n = pcb.getTerminatedList().size();
+        int sum = 0;
+        int sum2 = 0;
         for(int i = 0; i<n; i++) {
             ProcessList.Process p = pcb.getTerminatedList().get(i);
+            sum += p.getTurnAroundTime();
+            sum2 += p.getWaitTime();
             allModel.addElement("Process " + p.getNumber() +": " + p.getState() + " " + p.getTotalCycles() + " " + p.getTurnAroundTime());
         }
+        if(n != 0) {
+            sum /= n;
+            sum2 /= n;
+        }
+
+        turnAroundLabel.setText("Average Turn Around: " + sum);
+        waitTimeLabel.setText("Average Wait Time: " + sum2);
         ReadyQ.setModel(readyModel);
         WaitingQ.setModel(waitModel);
         All.setModel(allModel);

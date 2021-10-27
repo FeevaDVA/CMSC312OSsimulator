@@ -33,19 +33,20 @@ public class ProcessList{
         }
     }
     public class Process{
-        private int number, arrivalTime, completionTime;
+        private int number, arrivalTime, completionTime, burstTime;
         private String state;
         private List<Task> taskList;
         private int currentTask;
 
         public Process(int tempNum, int num) throws FileNotFoundException {
-            number = num;
+            number = num + 1000;
             taskList = new ArrayList<Task>();
             generateTasks(tempNum);
             state = "NEW";
             currentTask = 0;
             arrivalTime = 0;
             completionTime = 0;
+            burstTime = getTotalCycles();
         }
 
         private void generateTasks(int tempNum) throws FileNotFoundException {
@@ -81,6 +82,7 @@ public class ProcessList{
         public int getTurnAroundTime(){
             return completionTime - arrivalTime;
         }
+        public int getWaitTime(){ return getTurnAroundTime() - burstTime; }
         public int getTotalMem(){
             int tot = 0;
             for(int i = 0; i<taskList.size(); i++){
@@ -154,16 +156,4 @@ public class ProcessList{
         getProcess(n).updateState("TERMINATED");
     }
 
-    public static void main(String[] args) throws FileNotFoundException {
-        ProcessList p = new ProcessList();
-        p.generateProcesses(5, 1);
-
-        for(int n = 0; n<5; n++){
-            Process temp = p.getProcess(n);
-            System.out.println("Process " + n);
-            System.out.println(temp.getTotalCycles());
-        }
-
-
-    }
 }

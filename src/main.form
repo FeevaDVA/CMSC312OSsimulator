@@ -50,6 +50,18 @@
               <text value="0"/>
             </properties>
           </component>
+          <component id="e8a" class="javax.swing.JLabel" binding="turnAroundLabel">
+            <constraints/>
+            <properties>
+              <text value="Average Turn Around: 0"/>
+            </properties>
+          </component>
+          <component id="a3de" class="javax.swing.JLabel" binding="waitTimeLabel">
+            <constraints/>
+            <properties>
+              <text value="Average Wait Time: 0"/>
+            </properties>
+          </component>
         </children>
       </grid>
       <grid id="34a15" binding="panel2" layout-manager="GridLayoutManager" row-count="2" column-count="3" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
