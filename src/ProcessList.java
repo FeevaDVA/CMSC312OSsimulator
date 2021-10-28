@@ -73,12 +73,6 @@ public class ProcessList{
         public void setCompletionTime(int n){
             completionTime = n;
         }
-        public int getArrivalTime(){
-            return arrivalTime;
-        }
-        public int getCompletionTime(){
-            return completionTime;
-        }
         public int getTurnAroundTime(){
             return completionTime - arrivalTime;
         }

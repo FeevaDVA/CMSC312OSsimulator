@@ -22,8 +22,7 @@ public class mainGUI extends JFrame{
     private JScrollPane scrollpane3;
     private JLabel turnAroundLabel;
     private JLabel waitTimeLabel;
-    private boolean running = false;
-    private Scheduler schedule;
+    private Scheduler s;
 
     private mainGUI main;
     private ProcessList pcb;
@@ -36,8 +35,8 @@ public class mainGUI extends JFrame{
         setVisible(true);
         main = this;
 
-        schedule = new Scheduler(pcb, main);
-        Thread s = new Thread(schedule);
+        s = new Scheduler(pcb, main);
+        s.start();
 
 
         startButton.addActionListener(new ActionListener() {
@@ -45,10 +44,10 @@ public class mainGUI extends JFrame{
             public void actionPerformed(ActionEvent e) {
                 if(startButton.getText().equals("Start")) {
                     startButton.setText("Stop");
-                    s.start();
+                    s.setExit(false);
                 } else {
                     startButton.setText("Start");
-
+                    s.setExit(true);
                 }
             }
         });
@@ -74,11 +73,9 @@ public class mainGUI extends JFrame{
     public static void main(String[] args){
         mainGUI myFrame = new mainGUI();
     }
-
     private int getTempNumber(){
         return Integer.parseInt(a0TextField1.getText());
     }
-
     private int getNumberProcess(){
         return Integer.parseInt(a0TextField.getText());
     }
@@ -88,6 +85,7 @@ public class mainGUI extends JFrame{
         DefaultListModel readyModel = new DefaultListModel();
         DefaultListModel waitModel = new DefaultListModel();
 
+        allModel.addElement("Process #:| State | Remaining Cycles | Turn Around Time");
         int n = pcb.getList().size();
         for(int i = 0; i<n; i++){
             ProcessList.Process p = pcb.getList().get(i);
