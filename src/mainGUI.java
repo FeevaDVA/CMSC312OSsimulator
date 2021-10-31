@@ -6,6 +6,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
 
 public class mainGUI extends JFrame{
     private JPanel panel1;
@@ -30,11 +32,14 @@ public class mainGUI extends JFrame{
         pcb = new ProcessList();
         setContentPane(panel1);
         setTitle("OS Simulator");
-        setSize(800, 500);
+        setSize(1000, 600);
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         setVisible(true);
         main = this;
-
+        a0TextField.setPreferredSize(new Dimension(30, 20));
+        a0TextField1.setPreferredSize(new Dimension(30, 20));
+        a0TextField1.updateUI();
+        a0TextField.updateUI();
         s = new Scheduler(pcb, main);
         s.start();
 
@@ -65,6 +70,9 @@ public class mainGUI extends JFrame{
                 }
             }
         });
+        DefaultListModel allModel = new DefaultListModel();
+        allModel.addElement("Process #:| State | Remaining Cycles | Turn Around Time");
+        All.setModel(allModel);
     }
 
     public JButton getStartButton(){
@@ -85,7 +93,7 @@ public class mainGUI extends JFrame{
         DefaultListModel readyModel = new DefaultListModel();
         DefaultListModel waitModel = new DefaultListModel();
 
-        allModel.addElement("Process #:| State | Remaining Cycles | Turn Around Time");
+        allModel.addElement("Process #:| State | Remaining Cycles | Turn Around Time (seconds)");
         int n = pcb.getList().size();
         for(int i = 0; i<n; i++){
             ProcessList.Process p = pcb.getList().get(i);
@@ -100,21 +108,22 @@ public class mainGUI extends JFrame{
             }
         }
         n = pcb.getTerminatedList().size();
-        int sum = 0;
-        int sum2 = 0;
+        double sum = 0;
+        double sum2 = 0;
+        NumberFormat format = new DecimalFormat("#0.000");
         for(int i = 0; i<n; i++) {
             ProcessList.Process p = pcb.getTerminatedList().get(i);
             sum += p.getTurnAroundTime();
             sum2 += p.getWaitTime();
-            allModel.addElement("Process " + p.getNumber() +": " + p.getState() + " " + p.getTotalCycles() + " " + p.getTurnAroundTime());
+            allModel.addElement("Process " + p.getNumber() +": " + p.getState() + " " + p.getTotalCycles() + " " + format.format(p.getTurnAroundTime()/1000.0));
         }
         if(n != 0) {
             sum /= n;
             sum2 /= n;
         }
 
-        turnAroundLabel.setText("Average Turn Around: " + sum);
-        waitTimeLabel.setText("Average Wait Time: " + sum2);
+        turnAroundLabel.setText("Average Turn Around: " + format.format(sum/1000.0));
+        waitTimeLabel.setText("Average Wait Time: " + format.format(sum2/1000.0));
         ReadyQ.setModel(readyModel);
         WaitingQ.setModel(waitModel);
         All.setModel(allModel);

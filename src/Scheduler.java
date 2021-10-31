@@ -1,3 +1,4 @@
+import java.util.Date;
 public class Scheduler extends Thread {
     private static final int quantum = 10;
     private final ProcessList list;
@@ -25,7 +26,8 @@ public class Scheduler extends Thread {
                     switch (state) {
                         case "NEW" -> {
                             p.updateState("READY");
-                            p.setArrivalTime(cycleCount);
+                            Date date = new Date();
+                            p.setArrivalTime(date.getTime());
                         }
                         case "READY" -> {
                             ProcessList.Task t = p.getCurrentTask();
@@ -68,7 +70,8 @@ public class Scheduler extends Thread {
                                 cycleCount += quantum;
                                 if (!p.nextTask()) {
                                     p.updateState("TERMINATED");
-                                    p.setCompletionTime(cycleCount);
+                                    Date date = new Date();
+                                    p.setCompletionTime(date.getTime());
                                 } else {
                                     p.updateState("READY");
                                 }
@@ -81,7 +84,8 @@ public class Scheduler extends Thread {
                                 } else {
                                     p.updateState("TERMINATED");
                                     cycleCount -= timeLeft;
-                                    p.setCompletionTime(cycleCount);
+                                    Date date = new Date();
+                                    p.setCompletionTime(date.getTime());
                                 }
                             } else {
                                 t.setTime(timeLeft);
@@ -97,7 +101,8 @@ public class Scheduler extends Thread {
                                 cycleCount += quantum;
                                 if (!p.nextTask()) {
                                     p.updateState("TERMINATED");
-                                    p.setCompletionTime(cycleCount);
+                                    Date date = new Date();
+                                    p.setCompletionTime(date.getTime());
                                 } else {
                                     p.updateState("READY");
                                 }
@@ -111,7 +116,8 @@ public class Scheduler extends Thread {
                                 } else {
                                     p.updateState("TERMINATED");
                                     cycleCount -= timeLeft;
-                                    p.setCompletionTime(cycleCount);
+                                    Date date = new Date();
+                                    p.setCompletionTime(date.getTime());
                                 }
                             } else {
                                 t.setTime(timeLeft);
