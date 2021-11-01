@@ -49,7 +49,7 @@ public class ProcessList{
             currentTask = 0;
             arrivalTime = 0;
             completionTime = 0;
-            burstTime = getTotalCycles()/5.0;
+            burstTime = getTotalCycles()/10;
         }
         //Generates a process from the given template number if the file is not there it will throw exception, but you can try again.
         private void generateTasks(int tempNum) throws FileNotFoundException {
