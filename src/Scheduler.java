@@ -1,6 +1,6 @@
 import java.util.Date;
 public class Scheduler extends Thread {
-    private static final int quantum = 10;
+    private static final int quantum = 20;
     private final ProcessList list;
     private final mainGUI main;
     private int cycleCount = 0;
