@@ -1,10 +1,11 @@
 # CMSC312OSsimulator
 This is a Operating Simulator made for my class CMSC 312 at VCU
+The design of this Simulator uses a GUI as the main way of navigating and will show the processes in real time. You can also add and stop the simulator in real time. I decided to use a GUI instead of a UI for phase I because I felt that it was much more natural to navigate a GUI for the User and will make it much more pleasing to watch the simulator. As for what scheduling algorithm that I choose to run I decided to go with round robin as I felt that it was the most pleasant to watch work. The quantum that I settled with was 20 not because it was the most optimal, I felt that it was the most pleasing to watch run as you can see it complete task if I used a bigger number there are chances that I would skip over some tasks as the way that I run the simulator is to not run each CPU cycle but to decrement the amount of cycles from the process and match the task. I use a list to keep all the active processes and to check them but when they are out of cycles, they get marked to TERMINATED which then moves them from the process list to the terminated list. This is to keep the list of processes in the list manageable so that we won’t have to cycle through a list of ever-growing processes the only list that grows is the terminated list. critical sections are dealt with by a semaphore like operation where P is called in the template and then V is called when it’s done. No other processes can interrupt it and enter the critical section while a process is in it, they will just go to busy wait.
 # Installation
 There is a runnable jar in the Runnable folder
-For compliling I used Intellij to make and compile the project as well as their GUI builder so whatever dependencies you need for that you will need for this
+For compiling I used IntelliJ to make and compile the project as well as their GUI builder so whatever dependencies you need for that you will need for this
 
-# Useage
+# Usage
  There is a start/stop button at the button along with a add button with two text fields
  
  The first of which is the number of processes to add to the os
@@ -19,15 +20,15 @@ For compliling I used Intellij to make and compile the project as well as their 
  
  4 - calculate heavy process
  
- 5 - long calculate heavy process with crictical section
+ 5 - long calculate heavy process with critical section
  
  6 - i/o heavy process
  
  Try to keep the number of processes running at a time to around 10 - 15 any more and it runs somewhat slow but it can be done
  
- The average turn around time is shown at the buttom with the average wait time which is displayed in seconds
+ The average turnaround time is shown at the bottom with the average wait time which is displayed in seconds
  
- Each process will show its number/pid, state, and remaining cycles untill it is terminated where it will then show its turn around time in seconds
+ Each process will show its number/pid, state, and remaining cycles until it is terminated where it will then show its turnaround time in seconds
  
  The simulator can be started and stopped via the start/stop button.
  
@@ -44,7 +45,7 @@ Class: Scheduler
     Method: public void run()
       Desc: This is the main loop of the class this will while exit is not true run a scheduler algorithm on the list of processes from the class 
       processlist the scheduler algo that it is running as of now is round robin it will try to run at 10 cpu cycles per 2 milliseconds but the 
-      amount of processes in the list will make it longer
+      number of processes in the list will make it longer
   
 Class: ProcessList
 		
@@ -112,9 +113,10 @@ Class: MainGUI
 	Method: public static void main(String[] args)
 		Desc: starts the MainGUI by making a new object
 	Method: private int getTempNumber()
-		Desc: returns the template number entered into the text field of a0TextField1
+		Desc: returns the template number entered the text field of a0TextField1
 	Method: private int getNumberProcess()
-		Desc: returns the number of process to be added from the text field of a0TextField
+		Desc: returns the number of processes to be added from the text field of a0TextField
 	Method: public void updateList()]
-		Desc: updates the three scrollable lists with all the processes from the process list of the PCB and organizes them into their columns it will also update the average turn around time and wait time
+		Desc: updates the three scrollable lists with all the processes from the process list of the PCB and organizes them into their columns it will also update the average turnaround time and wait time
     
+
