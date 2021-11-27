@@ -8,6 +8,7 @@ import java.util.Scanner;
 
 public class ProcessList{
     private int countProcess;
+    private int memory = 1024;
     public class Task{
         private String taskName;
         private int time;
@@ -86,7 +87,7 @@ public class ProcessList{
         public int getTotalMem(){
             int tot = 0;
             for(int i = 0; i<taskList.size(); i++){
-                tot += taskList.get(i).getTime();
+                tot += taskList.get(i).getMemory();
             }
             return tot;
         }
@@ -133,7 +134,6 @@ public class ProcessList{
         processlist = new ArrayList<Process>();
         terminatedList = new ArrayList<Process>();
     }
-
     //generates a given number count of processes using the given template number of temp
     public void generateProcesses(int count, int temp) throws FileNotFoundException {
         for(int i = 0; i<count; i++){
@@ -145,6 +145,12 @@ public class ProcessList{
     //returns the list of processes
     public List<Process> getList(){
         return processlist;
+    }
+    //sets the list for the pcb
+    public void setList(List<Process> n){
+        for(Process p: n){
+            processlist.add(p);
+        }
     }
     //returns the list of terminated processes
     public List<Process> getTerminatedList(){
@@ -158,5 +164,7 @@ public class ProcessList{
     public void removeProcess(int n){
         getProcess(n).updateState("TERMINATED");
     }
+    public int getMemory(){return memory;}
+    public void setMemory(int n){memory = n;}
 
 }
