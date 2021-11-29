@@ -9,7 +9,7 @@ import java.util.Scanner;
 public class ProcessList{
     private int countProcess;
     private int memory = 1024;
-    public class Task{
+    public static class Task{
         private String taskName;
         private int time;
         private int memory;
@@ -34,18 +34,40 @@ public class ProcessList{
             return taskName;
         }
     }
-    public class Process{
+    public static class Process{
         private int number;
         private double burstTime;
         private long arrivalTime, completionTime;
         private String state;
         private List<Task> taskList;
         private int currentTask;
+        private boolean parent, child;
+        Process parentProc;
         //constructor for the process class that takes the number of processes to make and the template number
         public Process(int tempNum, int num) throws FileNotFoundException {
+            parent = false;
+            child = false;
             number = num + 1000;
             taskList = new ArrayList<Task>();
             generateTasks(tempNum);
+            state = "NEW";
+            currentTask = 0;
+            arrivalTime = 0;
+            completionTime = 0;
+            burstTime = getTotalCycles()/10;
+        }
+
+        public Process(Process P, int pos){
+            parentProc = P;
+            parent = false;
+            child = true;
+            taskList = new ArrayList<Task>();
+            List<Task> oTasks = P.getTaskList();
+            for(int i = pos+1; i<oTasks.size(); i++){
+                Task temp = oTasks.get(i);
+                taskList.add(new Task(temp.getTaskName(), temp.getTime(), 0));
+            }
+            number = P.getNumber() + 1000;
             state = "NEW";
             currentTask = 0;
             arrivalTime = 0;
@@ -62,7 +84,7 @@ public class ProcessList{
             while(scanner.hasNextLine()){
 
                 String nam = scanner.next();
-                if(nam.equals("P") || nam.equals("V")){
+                if(nam.equals("P") || nam.equals("V") || nam.equals("FORK")){
                     taskList.add(new Task(nam, 0, 0));
                 } else {
                     int n = scanner.nextInt(), m = scanner.nextInt();
@@ -84,6 +106,10 @@ public class ProcessList{
             return completionTime - arrivalTime;
         }
         public long getWaitTime(){ return (long) (getTurnAroundTime() - burstTime); }
+        public List<Task> getTaskList() { return taskList; }
+        public int getTaskPos(){ return currentTask; }
+        public boolean isChild(){ return child; }
+        public Process getParent(){ return parentProc; }
         public int getTotalMem(){
             int tot = 0;
             for(int i = 0; i<taskList.size(); i++){
@@ -122,6 +148,12 @@ public class ProcessList{
         //returns the numebr of the process
         public int getNumber(){
             return number;
+        }
+        public boolean isParent(){
+            return parent;
+        }
+        public void setParent(boolean p){
+            parent = p;
         }
 
     }
@@ -166,5 +198,8 @@ public class ProcessList{
     }
     public int getMemory(){return memory;}
     public void setMemory(int n){memory = n;}
+    public void addProcess(Process p, int pos){
+        processlist.add(pos, p);
+    }
 
 }

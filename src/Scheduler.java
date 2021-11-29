@@ -35,7 +35,11 @@ public class Scheduler extends Thread {
                         }
                         case "READY" -> {
                             ProcessList.Task t = p.getCurrentTask();
-                            if (t.getTaskName().equals("P")) {
+                            if (t.getTaskName().equals("FORK")){
+                                p.setParent(true);
+                                ProcessList.Process child = new ProcessList.Process(p, p.getTaskPos());
+                                list.addProcess(child, i);
+                            } else if (t.getTaskName().equals("P")) {
                                 if (semaphore == 1) {
                                     p.updateState("WAITING");
                                     break;
@@ -46,6 +50,11 @@ public class Scheduler extends Thread {
                                 }
                             } else if (t.getTaskName().equals("V")) {
                                 semaphore = 0;
+                            }
+
+                            if(p.isParent()){
+                                p.updateState("WAITING");
+                                break;
                             }
 
                             if (t.getTaskName().equals("I/O")) {
@@ -59,6 +68,10 @@ public class Scheduler extends Thread {
                         }
                         case "WAITING" -> {
                             ProcessList.Task t = p.getCurrentTask();
+                            if(p.isParent()){
+                                p.updateState("WAITING");
+                                break;
+                            }
                             if (t.getTaskName().equals("P")) {
                                 if (semaphore == 1) {
                                     p.updateState("WAITING");
@@ -131,6 +144,9 @@ public class Scheduler extends Thread {
                             runningProc = 0;
                         }
                         case "TERMINATED" -> {
+                            if(p.isChild()){
+                                p.getParent().setParent(false);
+                            }
                             list.setMemory(list.getMemory() + p.getTotalMem());
                             list.getTerminatedList().add(p);
                             list.getList().remove(i);
