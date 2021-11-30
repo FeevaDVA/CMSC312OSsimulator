@@ -29,7 +29,6 @@ public class Scheduler2 extends Thread {
                     }
                     ProcessList.Process p = list.getProcess(lowest);
                     String state = p.getState();
-                    System.out.println(lowest);
                     switch (state) {
                         case "NEW" -> {
                             if (list.getMemory() - p.getTotalMem() > 0) {
@@ -42,6 +41,7 @@ public class Scheduler2 extends Thread {
                         case "READY" -> {
                             ProcessList.Task t = p.getCurrentTask();
                             if (t.getTaskName().equals("FORK")) {
+                                p.nextTask();
                                 p.setParent(true);
                                 ProcessList.Process child = new ProcessList.Process(p, p.getTaskPos());
                                 list.addProcess(child, lowest);
@@ -56,6 +56,7 @@ public class Scheduler2 extends Thread {
                                 }
                             } else if (t.getTaskName().equals("V")) {
                                 semaphore = 0;
+                                p.nextTask();
                             }
 
                             if (p.isParent()) {

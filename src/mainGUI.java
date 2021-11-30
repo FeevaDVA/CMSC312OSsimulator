@@ -31,7 +31,6 @@ public class mainGUI extends JFrame{
     private JLabel memlabel2;
     private Scheduler s;
     private Scheduler2 n;
-    private SchedulerThread2 m;
 
     private mainGUI main;
     private ProcessList pcb, pcb2;
@@ -48,8 +47,6 @@ public class mainGUI extends JFrame{
         a0TextField.updateUI();
         pcb = new ProcessList();
         s = new Scheduler(pcb, main);
-        m = new SchedulerThread2(pcb, main, s);
-        s.setScheduler(m);
         pcb2 = new ProcessList();
         n = new Scheduler2(pcb2, main);
         s.start();
@@ -62,12 +59,10 @@ public class mainGUI extends JFrame{
                 if(startButton.getText().equals("Start")) {
                     startButton.setText("Stop");
                     s.setExit(false);
-                    m.setExit(false);
                     n.setExit(false);
                 } else {
                     startButton.setText("Start");
                     s.setExit(true);
-                    m.setExit(true);
                     n.setExit(true);
                 }
             }

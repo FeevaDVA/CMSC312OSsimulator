@@ -35,7 +35,7 @@ public class ProcessList{
         }
     }
     public static class Process{
-        private int number;
+        private int number, thread;
         private double burstTime;
         private long arrivalTime, completionTime;
         private String state;
@@ -108,6 +108,8 @@ public class ProcessList{
         public long getWaitTime(){ return (long) (getTurnAroundTime() - burstTime); }
         public List<Task> getTaskList() { return taskList; }
         public int getTaskPos(){ return currentTask; }
+        public int getThread(){ return thread; }
+        public void setThread(int n) { thread = n; }
         public boolean isChild(){ return child; }
         public Process getParent(){ return parentProc; }
         public int getTotalMem(){

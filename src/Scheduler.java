@@ -10,11 +10,19 @@ public class Scheduler extends Thread {
     private volatile boolean exit = true;
     private boolean test = false;
     private boolean updated = false;
-    private SchedulerThread2 scheduler;
+    private Threads thread1, thread2, thread3, thread4, thread5, thread6, thread7, thread8;
 
     public Scheduler(ProcessList l, mainGUI m) {
         list = l;
         main = m;
+        thread1 = new Threads();
+        thread2 = new Threads();
+        thread3 = new Threads();
+        thread4 = new Threads();
+        thread5 = new Threads();
+        thread6 = new Threads();
+        thread7 = new Threads();
+        thread8 = new Threads();
     }
 
     public void setExit(boolean e){ exit = e;}
@@ -22,14 +30,9 @@ public class Scheduler extends Thread {
     public void run() {
         while (true) {
             while(!exit) {
-                for (int i = 0; i < list.getList().size()/2; i++) {
+                for (int i = 0; i < list.getList().size(); i++) {
                     ProcessList.Process p = list.getList().get(i);
                     updateProcesses(p, i);
-                    System.out.println(i);
-                    int n = list.getList().size() - i - 1;
-                    ProcessList.Process b = list.getList().get(n);
-                    updateProcesses(b, n);
-
                     main.updateList();
                     try {
                         Thread.sleep(2);
@@ -37,9 +40,6 @@ public class Scheduler extends Thread {
                         e.printStackTrace();
                     }
                 }
-                if(list.getList().size() == 1)
-                    updateProcesses(list.getList().get(0), 0);
-                main.updateList();
             }
         }
     }
@@ -59,6 +59,7 @@ public class Scheduler extends Thread {
                 ProcessList.Task t = p.getCurrentTask();
                 if (t.getTaskName().equals("FORK")){
                     p.setParent(true);
+                    p.nextTask();
                     ProcessList.Process child = new ProcessList.Process(p, p.getTaskPos());
                     list.addProcess(child, i);
                 } else if (t.getTaskName().equals("P")) {
@@ -72,6 +73,7 @@ public class Scheduler extends Thread {
                     }
                 } else if (t.getTaskName().equals("V")) {
                     semaphore = 0;
+                    p.nextTask();
                 }
 
                 if(p.isParent()){
@@ -81,12 +83,16 @@ public class Scheduler extends Thread {
 
                 if (t.getTaskName().equals("I/O")) {
                     p.updateState("WAITING");
-                } else if (runningProc == 0) {
-                    runningProc = 1;
+                } else if (runningProc < 8) {
+                    runningProc += 1;
+                    assignThread(p);
                     p.updateState("RUNNING");
                 } else {
                     p.updateState("READY");
                 }
+            }
+            case "RUNNING" -> {
+                System.out.println(p.getThread());
             }
             case "WAITING" -> {
                 ProcessList.Task t = p.getCurrentTask();
@@ -133,38 +139,6 @@ public class Scheduler extends Thread {
                 }
 
             }
-            case "RUNNING" -> {
-                ProcessList.Task t = p.getCurrentTask();
-                int timeLeft = t.getTime() - quantum;
-                if (timeLeft == 0) {
-                    cycleCount += quantum;
-                    if (!p.nextTask()) {
-                        p.updateState("TERMINATED");
-                        Date date = new Date();
-                        p.setCompletionTime(date.getTime());
-                    } else {
-                        p.updateState("READY");
-                    }
-
-                } else if (timeLeft < 0) {
-                    if (p.nextTask()) {
-                        t = p.getCurrentTask();
-                        t.setTime(t.getTime() + timeLeft);
-                        p.updateState("READY");
-                        cycleCount += quantum;
-                    } else {
-                        p.updateState("TERMINATED");
-                        cycleCount -= timeLeft;
-                        Date date = new Date();
-                        p.setCompletionTime(date.getTime());
-                    }
-                } else {
-                    t.setTime(timeLeft);
-                    p.updateState("READY");
-                    cycleCount += quantum;
-                }
-                runningProc = 0;
-            }
             case "TERMINATED" -> {
                 if(p.isChild()){
                     p.getParent().setParent(false);
@@ -176,12 +150,45 @@ public class Scheduler extends Thread {
         }
     }
 
-    public void setScheduler(SchedulerThread2 s){ scheduler = s; }
+    public void assignThread(ProcessList.Process p){
+        if(!thread1.isAlive()){
+            p.setThread(0);
+            thread1 = new Threads(list, p, quantum, this);
+            thread1.start();
+        } else if(!thread2.isAlive()){
+            p.setThread(1);
+            thread2 = new Threads(list, p, quantum, this);
+            thread2.start();
+        } else if(!thread3.isAlive()) {
+            p.setThread(2);
+            thread3 = new Threads(list, p, quantum, this);
+            thread3.start();
+        } else if(!thread4.isAlive()) {
+            p.setThread(3);
+            thread4 = new Threads(list, p, quantum, this);
+            thread4.start();
+        } else if(!thread5.isAlive()) {
+            p.setThread(4);
+            thread5 = new Threads(list, p, quantum, this);
+            thread5.start();
+        } else if(!thread6.isAlive()) {
+            p.setThread(5);
+            thread6 = new Threads(list, p, quantum, this);
+            thread6.start();
+        } else if(!thread7.isAlive()) {
+            p.setThread(6);
+            thread7 = new Threads(list, p, quantum, this);
+            thread7.start();
+        } else if(!thread8.isAlive()) {
+            p.setThread(7);
+            thread8 = new Threads(list, p, quantum, this);
+            thread8.start();
+        }
+    }
+
     public void setSemaphore(int i){ semaphore = i;}
     public void setRunningProc(int i){ runningProc = i;}
     public int getSemaphore(){ return semaphore; }
     public int getRunningProc(){ return runningProc; }
-    public boolean updated(){ return updated; }
-    public void setUpdated(boolean u){ updated = u; }
     public ProcessList getPCB(){ return list; }
 }
