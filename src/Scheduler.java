@@ -10,6 +10,7 @@ public class Scheduler extends Thread {
     private volatile boolean exit = true;
     private boolean test = false;
     private boolean updated = false;
+    private boolean isInterrupted = false;
     private Threads thread1, thread2, thread3, thread4, thread5, thread6, thread7, thread8;
 
     public Scheduler(ProcessList l, mainGUI m) {
@@ -31,6 +32,15 @@ public class Scheduler extends Thread {
         while (true) {
             while(!exit) {
                 for (int i = 0; i < list.getList().size(); i++) {
+                    if(isInterrupted){
+                        isInterrupted = false;
+                        try {
+                            Thread.sleep(2);
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+                        break;
+                    }
                     ProcessList.Process p = list.getList().get(i);
                     updateProcesses(p, i);
                     main.updateList();
@@ -57,7 +67,11 @@ public class Scheduler extends Thread {
             }
             case "READY" -> {
                 ProcessList.Task t = p.getCurrentTask();
-                if (t.getTaskName().equals("FORK")){
+                if(t.getTaskName().equals("I/OInterrupt")){
+                    isInterrupted = true;
+                    p.nextTask();
+                    break;
+                } else if (t.getTaskName().equals("FORK")){
                     p.setParent(true);
                     p.nextTask();
                     ProcessList.Process child = new ProcessList.Process(p, p.getTaskPos());
@@ -74,6 +88,7 @@ public class Scheduler extends Thread {
                 } else if (t.getTaskName().equals("V")) {
                     semaphore = 0;
                     p.nextTask();
+                    break;
                 }
 
                 if(p.isParent()){
