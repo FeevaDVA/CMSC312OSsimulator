@@ -31,16 +31,9 @@ public class Scheduler extends Thread {
     public void run() {
         while (true) {
             while(!exit) {
+
                 for (int i = 0; i < list.getList().size(); i++) {
-                    if(isInterrupted){
-                        isInterrupted = false;
-                        try {
-                            Thread.sleep(2);
-                        } catch (InterruptedException e) {
-                            e.printStackTrace();
-                        }
-                        break;
-                    }
+                    System.out.println(semaphore);
                     ProcessList.Process p = list.getList().get(i);
                     updateProcesses(p, i);
                     main.updateList();
@@ -56,6 +49,9 @@ public class Scheduler extends Thread {
 
     public void updateProcesses(ProcessList.Process p, int i){
         String state = p.getState();
+        if (p.isRunning()){
+            return;
+        }
         switch (state) {
             case "NEW" -> {
                 if(list.getMemory() - p.getTotalMem() > 0) {
@@ -67,11 +63,7 @@ public class Scheduler extends Thread {
             }
             case "READY" -> {
                 ProcessList.Task t = p.getCurrentTask();
-                if(t.getTaskName().equals("I/OInterrupt")){
-                    isInterrupted = true;
-                    p.nextTask();
-                    break;
-                } else if (t.getTaskName().equals("FORK")){
+                if (t.getTaskName().equals("FORK")){
                     p.setParent(true);
                     p.nextTask();
                     ProcessList.Process child = new ProcessList.Process(p, p.getTaskPos());
@@ -105,9 +97,6 @@ public class Scheduler extends Thread {
                 } else {
                     p.updateState("READY");
                 }
-            }
-            case "RUNNING" -> {
-                System.out.println(p.getThread());
             }
             case "WAITING" -> {
                 ProcessList.Task t = p.getCurrentTask();
@@ -166,6 +155,7 @@ public class Scheduler extends Thread {
     }
 
     public void assignThread(ProcessList.Process p){
+        p.setRunning(true);
         if(!thread1.isAlive()){
             p.setThread(0);
             thread1 = new Threads(list, p, quantum, this);

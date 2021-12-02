@@ -41,12 +41,13 @@ public class ProcessList{
         private String state;
         private List<Task> taskList;
         private int currentTask;
-        private boolean parent, child;
+        private boolean parent, child, running;
         Process parentProc;
         //constructor for the process class that takes the number of processes to make and the template number
         public Process(int tempNum, int num) throws FileNotFoundException {
             parent = false;
             child = false;
+            running = false;
             number = num + 1000;
             taskList = new ArrayList<Task>();
             generateTasks(tempNum);
@@ -109,6 +110,8 @@ public class ProcessList{
         public List<Task> getTaskList() { return taskList; }
         public int getTaskPos(){ return currentTask; }
         public int getThread(){ return thread; }
+        public boolean isRunning(){ return running; }
+        public void setRunning(boolean r){ running = r; }
         public void setThread(int n) { thread = n; }
         public boolean isChild(){ return child; }
         public Process getParent(){ return parentProc; }

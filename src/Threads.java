@@ -1,4 +1,5 @@
 import java.util.Date;
+import java.util.Random;
 
 public class Threads extends Thread{
     private ProcessList.Process proc;
@@ -21,6 +22,19 @@ public class Threads extends Thread{
     }
 
     public void run() {
+        Random r = new Random();
+        int n = r.nextInt(11);
+        if(n == 5){
+            proc.updateState("WAITING");
+            for(int i = 0; i<30; i++){
+                try {
+                    Thread.sleep(2);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+            proc.updateState("RUNNING");
+        }
         ProcessList.Task t = proc.getCurrentTask();
         for (int i = 0; i <= cycles; i++) {
             if(t.getTaskName().equals("P") || t.getTaskName().equals("V") || t.getTaskName().equals("FORK")){
@@ -51,7 +65,7 @@ public class Threads extends Thread{
         }
 
         try {
-            Thread.sleep(100);
+            Thread.sleep(2);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -59,6 +73,7 @@ public class Threads extends Thread{
         if (proc.getTotalCycles() > 0 ) {
             proc.updateState("READY");
         }
+        proc.setRunning(false);
         scheduler.setRunningProc(scheduler.getRunningProc() - 1);
     }
 }
