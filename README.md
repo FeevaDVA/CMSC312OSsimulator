@@ -1,7 +1,7 @@
 Github Link: FeevaDVA/CMSC312OSsimulator (github.com)
 # CMSC312OSsimulator
 This is an Operating Simulator made for my class CMSC 312 at VCU
-The design of this Simulator uses a GUI as the main way of navigating and will show the processes in real time. You can also add and stop the simulator in real time. I decided to use a GUI instead of a UI for phase I because I felt that it was much more natural to navigate a GUI for the User and will make it much more pleasing to watch the simulator. As for what scheduling algorithm that I choose to run I decided to go with round robin as I felt that it was the most pleasant to watch work. The quantum that I settled with was 20 not because it was the most optimal, I felt that it was the most pleasing to watch run as you can see it complete task if I used a bigger number there are chances that I would skip over some tasks as the way that I run the simulator is to not run each CPU cycle but to decrement the amount of cycles from the process and match the task. I use a list to keep all the active processes and to check them but when they are out of cycles, they get marked to TERMINATED which then moves them from the process list to the terminated list. This is to keep the list of processes in the list manageable so that we won’t have to cycle through a list of ever-growing processes the only list that grows is the terminated list. critical sections are dealt with by a semaphore like operation where P is called in the template and then V is called when it’s done. No other processes can interrupt it and enter the critical section while a process is in it, they will just go to busy wait. I spent quite a while on making sure that the program runs smoothly and that it looks satisfying to watch the processes complete. I setup ways for memory to be implemented and I think that adding fork will be easy also since I made it check the tasks, but I think that for Phase I that this came out well. The process List class is my PCB like class, so it handles everything pertaining to process information.
+
 # Installation
 There is a runnable jar in the root of the project. Make sure that the jar is in the same folder as the Process Templates folder since that’s where it grabs the templates from. As for java version the jar was made with the Java 17 development kit so make sure that Java 17 is downloaded. JDK 17 can be found here https://www.oracle.com/java/technologies/downloads/
 
@@ -25,10 +25,14 @@ For compiling I used intellij gui builder to make the gui so there is a .form bu
  5 - long calculate heavy process with critical section
  
  6 - i/o heavy process
+
+ 7 - a copy of the template 1 but with a fork in the middle
  
- Try to keep the number of processes running at a time to around 10 - 15 anymore and it runs somewhat slow but it can be done
  
- The average turnaround time is shown at the bottom with the average wait time which is displayed in seconds
+ 
+ The average turnaround time is shown at the bottom with the average wait time which is displayed in seconds for scheduler 1 and 2 respectively
+
+ Next to this is memory for each scheduler they both have 1024 in memory each process has a randomly generated amount of memory that they take up
  
  Each process will show its number/pid, state, and remaining cycles until it is terminated where it will then show its turnaround time in seconds
  
@@ -37,8 +41,32 @@ For compiling I used intellij gui builder to make the gui so there is a .form bu
  The three section of list is split into ready list, waiting, and all the processes.
 
 # Documentation
-  
+
 Class: Scheduler
+
+    Constructor: public Scheduler(ProcessList l, MainGUI m)
+      Desc: This creates the scheduler object which extends a thread so it acts as a runnable thread
+    Method: public void setExit(boolean e)
+      Desc: This will set the boolean exit to the given boolean e
+    Method: public void run()
+      Desc: This is the main loop of the class this will while exit is not true run a scheduler algorithm on the list of processes from the class 
+      processlist the scheduler algo that it is running as of now is round robin it will try to run at 20 CPU cycles per 2 milliseconds it will call the updateProcess method
+      and pass the current process along to it
+    Method: public void updateProcesses(ProcessList.Process p, int i)
+      Desc: the method will update the current process depending on the state that it is in and it will assign the process to a thread if it is ready to be ran
+    Method: public void assignThread(ProcessList.Process p)
+      Desc: this method will assign the given process to a thread that is currently not running
+    Method: public void setSemaphore(int i)
+      Desc: sets the semaphore to i
+    Method: public void setRunningProc(int i)
+      Desc: sets the runningProc to i
+    Method: public int getSemaphore()
+      Desc: returns the semaphore
+    Method: public int getRunningProc()
+      Desc: returns the runningProc
+    Method: public ProcessList getPCB()
+      Desc: returns the ProcessList list
+Class: Scheduler2
     
     Constructor: public Scheduler(ProcessList l, MainGUI m)
       Desc: This creates the scheduler object which extends a thread so it acts as a runnable thread
@@ -46,8 +74,7 @@ Class: Scheduler
       Desc: This will set the boolean exit to the given boolean e
     Method: public void run()
       Desc: This is the main loop of the class this will while exit is not true run a scheduler algorithm on the list of processes from the class 
-      processlist the scheduler algo that it is running as of now is round robin it will try to run at 20 CPU cycles per 2 milliseconds but the 
-      number of processes in the list will make it longer
+      processlist the scheduler algo that it is running Shortest remaining time and it will keep checking for the lowest remaining time process to run
   
 Class: ProcessList
 		
@@ -105,6 +132,14 @@ Class: ProcessList
 				Desc: returns the state of the process
 			Method:public int getNumber()
 				Desc: returns the number of the process
+Class: Threads
+    
+    Constructor: public Threads()
+        Desc: This is the default constructor it sets all variables to null or 0
+    Constructor: public Threads(ProcessList l, ProcessList.Process p, int c, Scheduler s)
+        Desc: this sets the list to l, proc to p, cycles to c, and scheduler to s
+    Method: public void run()
+        Desc: this is the main run method for the thread it will take the given process and to calculate task until it reaches the end of the given cycles it also has a 1 in 10 chance to cause an io interrupt
 
 Class: MainGUI
 	

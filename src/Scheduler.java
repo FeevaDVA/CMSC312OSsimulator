@@ -8,9 +8,6 @@ public class Scheduler extends Thread {
     private int semaphore = 0;
     private int procCrit = 0;
     private volatile boolean exit = true;
-    private boolean test = false;
-    private boolean updated = false;
-    private boolean isInterrupted = false;
     private Threads thread1, thread2, thread3, thread4, thread5, thread6, thread7, thread8;
 
     public Scheduler(ProcessList l, mainGUI m) {
@@ -28,10 +25,11 @@ public class Scheduler extends Thread {
 
     public void setExit(boolean e){ exit = e;}
     @Override
+
+    //main run loop
     public void run() {
         while (true) {
             while(!exit) {
-
                 for (int i = 0; i < list.getList().size(); i++) {
                     System.out.println(semaphore);
                     ProcessList.Process p = list.getList().get(i);
@@ -47,6 +45,7 @@ public class Scheduler extends Thread {
         }
     }
 
+    //updates the given process
     public void updateProcesses(ProcessList.Process p, int i){
         String state = p.getState();
         if (p.isRunning()){
@@ -154,6 +153,7 @@ public class Scheduler extends Thread {
         }
     }
 
+    //assigns the process to a thread that is not running one already
     public void assignThread(ProcessList.Process p){
         p.setRunning(true);
         if(!thread1.isAlive()){

@@ -20,7 +20,8 @@ public class Threads extends Thread{
         cycles = c;
         scheduler = s;
     }
-
+    //main run method for thread
+    //updates the given process with a 1 in 10 chance to have a forced io interrupt
     public void run() {
         Random r = new Random();
         int n = r.nextInt(11);
