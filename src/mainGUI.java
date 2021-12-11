@@ -73,6 +73,7 @@ public class mainGUI extends JFrame{
                 try {
                     pcb.generateProcesses(getNumberProcess(), getTempNumber());
                     pcb2.generateProcesses(getNumberProcess(), getTempNumber());
+                    pcb2.sortPriorityList();
                     updateList();
                     updateList2();
                     System.out.println("this");

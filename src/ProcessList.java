@@ -3,6 +3,7 @@ import java.io.FileNotFoundException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Scanner;
 
@@ -34,21 +35,23 @@ public class ProcessList{
             return taskName;
         }
     }
-    public static class Process{
-        private int number, thread;
+    public static class Process implements Comparable<Process>{
+        private int number, thread, priority;
         private double burstTime;
         private long arrivalTime, completionTime;
         private String state;
         private List<Task> taskList;
         private int currentTask;
-        private boolean parent, child, running;
+        private boolean parent, child, running, added;
         Process parentProc;
         //constructor for the process class that takes the number of processes to make and the template number
         public Process(int tempNum, int num) throws FileNotFoundException {
             parent = false;
             child = false;
             running = false;
+            added = false;
             number = num + 1000;
+            priority = (int) (Math.random()*6);
             taskList = new ArrayList<Task>();
             generateTasks(tempNum);
             state = "NEW";
@@ -60,9 +63,11 @@ public class ProcessList{
 
         public Process(Process P, int pos){
             parentProc = P;
+            added = false;
             parent = false;
             child = true;
             taskList = new ArrayList<Task>();
+            priority = parentProc.getPriority();
             List<Task> oTasks = P.getTaskList();
             for(int i = pos+1; i<oTasks.size(); i++){
                 Task temp = oTasks.get(i);
@@ -114,6 +119,23 @@ public class ProcessList{
         public void setRunning(boolean r){ running = r; }
         public void setThread(int n) { thread = n; }
         public boolean isChild(){ return child; }
+        public boolean isAdded() { return added; }
+
+        public void setAdded(boolean added) {
+            this.added = added;
+        }
+
+        public int compareTo(Process other){
+            int res = other.getPriority() - this.getPriority();
+            if(res >= 0)
+                return -1;
+            else
+                return 1;
+        }
+        public int getPriority() {
+            return priority;
+        }
+
         public Process getParent(){ return parentProc; }
         public int getTotalMem(){
             int tot = 0;
@@ -164,12 +186,14 @@ public class ProcessList{
     }
     private List<Process> processlist;
     private List<Process> terminatedList;
+    private List<Process> firstCome;
 
     //default constructor of the ProcessList class
     public ProcessList(){
         countProcess = 0;
         processlist = new ArrayList<Process>();
         terminatedList = new ArrayList<Process>();
+        firstCome = new ArrayList<Process>();
     }
     //generates a given number count of processes using the given template number of temp
     public void generateProcesses(int count, int temp) throws FileNotFoundException {
@@ -189,6 +213,9 @@ public class ProcessList{
             processlist.add(p);
         }
     }
+    public void sortPriorityList(){
+        Collections.sort(processlist);
+    }
     //returns the list of terminated processes
     public List<Process> getTerminatedList(){
         return terminatedList;
@@ -206,5 +233,8 @@ public class ProcessList{
     public void addProcess(Process p, int pos){
         processlist.add(pos, p);
     }
+    public void addFirstCome(Process p){
+        p.setAdded(true);
+        firstCome.add(p); }
 
 }

@@ -33,7 +33,10 @@ public class Scheduler extends Thread {
                 for (int i = 0; i < list.getList().size(); i++) {
                     System.out.println(semaphore);
                     ProcessList.Process p = list.getList().get(i);
-                    updateProcesses(p, i);
+                    if(p.getTotalCycles()>200)
+                        updateProcesses(p, i);
+                    else if(!p.isAdded())
+                        list.addFirstCome(p);
                     main.updateList();
                     try {
                         Thread.sleep(2);
@@ -80,6 +83,14 @@ public class Scheduler extends Thread {
                     semaphore = 0;
                     p.nextTask();
                     break;
+                } else if(t.getTaskName().equals("m1")){
+                    if(i+1<list.getList().size()) {
+                        ProcessList.Task temp = list.getList().get(i + 1).getCurrentTask();
+                        temp.setTime(temp.getTime() + 30);
+                    }
+                } else if(t.getTaskName().equals("m2")){
+                    ProcessList.Task temp = list.getList().get(list.getList().size()-1).getCurrentTask();
+                    temp.setTime(temp.getTime() + 100);
                 }
 
                 if(p.isParent()){

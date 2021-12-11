@@ -23,10 +23,6 @@ public class Scheduler2 extends Thread {
             while (!exit) {
                 if (list.getList().size() > 0) {
                     int lowest = 0;
-                    for (int i = 0; i < list.getList().size(); i++) {
-                        if (list.getList().get(i).getTotalCycles() < list.getList().get(lowest).getTotalCycles() && !list.getList().get(i).isParent())
-                            lowest = i;
-                    }
                     ProcessList.Process p = list.getProcess(lowest);
                     String state = p.getState();
                     switch (state) {
@@ -40,11 +36,11 @@ public class Scheduler2 extends Thread {
                         }
                         case "READY" -> {
                             ProcessList.Task t = p.getCurrentTask();
-                            if (t.getTaskName().equals("FORK")) {
-                                p.nextTask();
+                            if (t.getTaskName().equals("FORK")){
                                 p.setParent(true);
+                                p.nextTask();
                                 ProcessList.Process child = new ProcessList.Process(p, p.getTaskPos());
-                                list.addProcess(child, lowest);
+                                list.addProcess(child, 0);
                             } else if (t.getTaskName().equals("P")) {
                                 if (semaphore == 1) {
                                     p.updateState("WAITING");
@@ -57,6 +53,15 @@ public class Scheduler2 extends Thread {
                             } else if (t.getTaskName().equals("V")) {
                                 semaphore = 0;
                                 p.nextTask();
+                                break;
+                            } else if(t.getTaskName().equals("m1")){
+                                if(0+1<list.getList().size()) {
+                                    ProcessList.Task temp = list.getList().get(0 + 1).getCurrentTask();
+                                    temp.setTime(temp.getTime() + 30);
+                                }
+                            } else if(t.getTaskName().equals("m2")){
+                                ProcessList.Task temp = list.getList().get(list.getList().size()-1).getCurrentTask();
+                                temp.setTime(temp.getTime() + 100);
                             }
 
                             if (p.isParent()) {
