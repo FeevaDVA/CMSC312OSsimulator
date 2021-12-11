@@ -1,3 +1,4 @@
+READ ME IS OUTDATED KINDA
 Github Link: FeevaDVA/CMSC312OSsimulator (github.com)
 # CMSC312OSsimulator
 This is an Operating Simulator made for my class CMSC 312 at VCU
