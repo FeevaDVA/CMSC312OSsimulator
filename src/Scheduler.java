@@ -8,7 +8,8 @@ public class Scheduler extends Thread {
     private int semaphore = 0;
     private int procCrit = 0;
     private volatile boolean exit = true;
-    private Threads thread1, thread2, thread3, thread4, thread5, thread6, thread7, thread8;
+    private Threads thread1, thread2, thread3, thread4, thread5, thread6, thread7;
+    private FirstComeThread thread8;
 
     public Scheduler(ProcessList l, mainGUI m) {
         list = l;
@@ -20,10 +21,14 @@ public class Scheduler extends Thread {
         thread5 = new Threads();
         thread6 = new Threads();
         thread7 = new Threads();
-        thread8 = new Threads();
+        thread8 = new FirstComeThread(l, m);
+        thread8.start();
     }
 
-    public void setExit(boolean e){ exit = e;}
+    public void setExit(boolean e){
+        exit = e;
+        thread8.setExit(e);
+    }
     @Override
 
     //main run loop
@@ -31,9 +36,8 @@ public class Scheduler extends Thread {
         while (true) {
             while(!exit) {
                 for (int i = 0; i < list.getList().size(); i++) {
-                    System.out.println(semaphore);
                     ProcessList.Process p = list.getList().get(i);
-                    if(p.getTotalCycles()>200)
+                    if(p.getTotalCycles()<2000)
                         updateProcesses(p, i);
                     else if(!p.isAdded())
                         list.addFirstCome(p);
@@ -89,8 +93,10 @@ public class Scheduler extends Thread {
                         temp.setTime(temp.getTime() + 30);
                     }
                 } else if(t.getTaskName().equals("m2")){
-                    ProcessList.Task temp = list.getList().get(list.getList().size()-1).getCurrentTask();
-                    temp.setTime(temp.getTime() + 100);
+                    if(list.getList().size()-1>0) {
+                        ProcessList.Task temp = list.getList().get(list.getList().size() - 1).getCurrentTask();
+                        temp.setTime(temp.getTime() + 100);
+                    }
                 }
 
                 if(p.isParent()){
@@ -100,7 +106,7 @@ public class Scheduler extends Thread {
 
                 if (t.getTaskName().equals("I/O")) {
                     p.updateState("WAITING");
-                } else if (runningProc < 8) {
+                } else if (runningProc < 7) {
                     runningProc += 1;
                     assignThread(p);
                     p.updateState("RUNNING");
@@ -195,10 +201,6 @@ public class Scheduler extends Thread {
             p.setThread(6);
             thread7 = new Threads(list, p, quantum, this);
             thread7.start();
-        } else if(!thread8.isAlive()) {
-            p.setThread(7);
-            thread8 = new Threads(list, p, quantum, this);
-            thread8.start();
         }
     }
 

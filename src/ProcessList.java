@@ -90,7 +90,7 @@ public class ProcessList{
             while(scanner.hasNextLine()){
 
                 String nam = scanner.next();
-                if(nam.equals("P") || nam.equals("V") || nam.equals("FORK")){
+                if(nam.equals("P") || nam.equals("V") || nam.equals("FORK") || nam.equals("m1") || nam.equals("m2")){
                     taskList.add(new Task(nam, 0, 0));
                 } else {
                     int n = scanner.nextInt(), m = scanner.nextInt();
@@ -207,6 +207,11 @@ public class ProcessList{
     public List<Process> getList(){
         return processlist;
     }
+
+    public List<Process> getFirstCome() {
+        return firstCome;
+    }
+
     //sets the list for the pcb
     public void setList(List<Process> n){
         for(Process p: n){
@@ -223,6 +228,9 @@ public class ProcessList{
     //returns the process at the given int n
     public Process getProcess(int n){
         return processlist.get(n);
+    }
+    public Process getFirstProcess(int n){
+        return firstCome.get(n);
     }
     //removes the process at given int n
     public void removeProcess(int n){
