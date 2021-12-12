@@ -44,6 +44,7 @@ public class ProcessList{
         private List<Task> taskList;
         private int currentTask;
         private boolean parent, child, running, added;
+        private Resource resource;
         Process parentProc;
         ProcessList list;
         //constructor for the process class that takes the number of processes to make and the template number
@@ -62,6 +63,7 @@ public class ProcessList{
             completionTime = 0;
             burstTime = getTotalCycles()/10;
             list = l;
+            resource = new Resource();
         }
 
         public Process(Process P, int pos){
@@ -83,6 +85,7 @@ public class ProcessList{
             completionTime = 0;
             burstTime = getTotalCycles()/10;
             list = parentProc.getList();
+            resource = parentProc.getResource();
         }
         //Generates a process from the given template number if the file is not there it will throw exception, but you can try again.
         private void generateTasks(int tempNum) throws FileNotFoundException {
@@ -131,6 +134,11 @@ public class ProcessList{
 
         public void setAdded(boolean added) {
             this.added = added;
+        }
+        public Resource getResource(){ return resource; }
+
+        public void setResource(Resource resource) {
+            this.resource = resource;
         }
 
         public ProcessList getList() {

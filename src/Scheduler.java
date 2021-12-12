@@ -89,13 +89,11 @@ public class Scheduler extends Thread {
                     break;
                 } else if(t.getTaskName().equals("m1")){
                     if(i+1<list.getList().size()) {
-                        ProcessList.Task temp = list.getList().get(i + 1).getCurrentTask();
-                        temp.setTime(temp.getTime() + 30);
+                        list.getList().get(i + 1).setResource(p.getResource());
                     }
                 } else if(t.getTaskName().equals("m2")){
-                    if(list.getList().size()-1>0) {
-                        ProcessList.Task temp = list.getList().get(list.getList().size() - 1).getCurrentTask();
-                        temp.setTime(temp.getTime() + 100);
+                    if(list.getList().size()+1>0) {
+                        list.getList().get(i + 1).getResource().setMessage("Hello");
                     }
                 }
 
