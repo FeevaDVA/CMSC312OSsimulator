@@ -163,6 +163,7 @@ public class Scheduler extends Thread {
                 if(p.isChild()){
                     p.getParent().setParent(false);
                 }
+
                 list.setMemory(list.getMemory() + p.getTotalMem());
                 list.getTerminatedList().add(p);
                 list.getList().remove(i);

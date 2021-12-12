@@ -10,6 +10,7 @@ import java.util.Scanner;
 public class ProcessList{
     private int countProcess;
     private int memory = 1024;
+    private int frames = 240;
     public static class Task{
         private String taskName;
         private int time;
@@ -36,7 +37,7 @@ public class ProcessList{
         }
     }
     public static class Process implements Comparable<Process>{
-        private int number, thread, priority;
+        private int number, thread, priority, frames;
         private double burstTime;
         private long arrivalTime, completionTime;
         private String state;
@@ -44,8 +45,9 @@ public class ProcessList{
         private int currentTask;
         private boolean parent, child, running, added;
         Process parentProc;
+        ProcessList list;
         //constructor for the process class that takes the number of processes to make and the template number
-        public Process(int tempNum, int num) throws FileNotFoundException {
+        public Process(int tempNum, int num, ProcessList l) throws FileNotFoundException {
             parent = false;
             child = false;
             running = false;
@@ -59,6 +61,7 @@ public class ProcessList{
             arrivalTime = 0;
             completionTime = 0;
             burstTime = getTotalCycles()/10;
+            list = l;
         }
 
         public Process(Process P, int pos){
@@ -79,6 +82,7 @@ public class ProcessList{
             arrivalTime = 0;
             completionTime = 0;
             burstTime = getTotalCycles()/10;
+            list = parentProc.getList();
         }
         //Generates a process from the given template number if the file is not there it will throw exception, but you can try again.
         private void generateTasks(int tempNum) throws FileNotFoundException {
@@ -120,9 +124,17 @@ public class ProcessList{
         public void setThread(int n) { thread = n; }
         public boolean isChild(){ return child; }
         public boolean isAdded() { return added; }
+        public int getFrames(){ return frames; }
+        public void setFrames(int f){
+            frames = (getTotalMem()/list.getTotalMem())*f;
+        }
 
         public void setAdded(boolean added) {
             this.added = added;
+        }
+
+        public ProcessList getList() {
+            return list;
         }
 
         public int compareTo(Process other){
@@ -198,7 +210,7 @@ public class ProcessList{
     //generates a given number count of processes using the given template number of temp
     public void generateProcesses(int count, int temp) throws FileNotFoundException {
         for(int i = 0; i<count; i++){
-            Process p = new Process(temp, countProcess++);
+            Process p = new Process(temp, countProcess++, this);
             processlist.add(p);
         }
     }
@@ -207,9 +219,28 @@ public class ProcessList{
     public List<Process> getList(){
         return processlist;
     }
+    public int getFrames(){
+        return frames;
+    }
+
+    public void setFrames(int n){
+        frames = n;
+    }
 
     public List<Process> getFirstCome() {
         return firstCome;
+    }
+    public void setFrames(){
+        for(int i = 0; i<processlist.size(); i++){
+            processlist.get(i).setFrames(frames);
+        }
+    }
+    public int getTotalMem() {
+        int tot = 0;
+        for(int i = 0; i<processlist.size(); i++){
+            tot += processlist.get(i).getTotalMem();
+        }
+        return tot;
     }
 
     //sets the list for the pcb
