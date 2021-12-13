@@ -86,7 +86,7 @@ public class mainGUI extends JFrame{
             }
         });
         DefaultListModel allModel = new DefaultListModel();
-        allModel.addElement("Process #:| State | Remaining Cycles | Total Mem | Turn Around Time (seconds)");
+        allModel.addElement("Process #:| State | Remaining Cycles | Total Mem | Priority | Message from resource | Turn Around Time (seconds)");
         All.setModel(allModel);
         all2List.setModel(allModel);
     }
@@ -109,17 +109,17 @@ public class mainGUI extends JFrame{
         DefaultListModel readyModel = new DefaultListModel();
         DefaultListModel waitModel = new DefaultListModel();
 
-        allModel.addElement("Process #:| State | Remaining Cycles | Total Mem | Turn Around Time (seconds)");
+        allModel.addElement("Process #:| State | Remaining Cycles | Total Mem | Priority | Message from resource | Turn Around Time (seconds)");
         for(int i = 0; i<pcb.getList().size(); i++){
             ProcessList.Process p = pcb.getList().get(i);
             if(p.getState().equals("WAITING")){
-                waitModel.addElement("Process " + p.getNumber() +": " + p.getState() + " " + p.getTotalCycles() + " " + p.getTotalMem());
-                allModel.addElement("Process " + p.getNumber() +": " + p.getState() + " " + p.getTotalCycles() + " " + p.getTotalMem());
+                waitModel.addElement("Process " + p.getNumber() +": " + p.getState() + " " + p.getTotalCycles() + " " + p.getTotalMem() + " " + p.getPriority() + " " + p.getResource().getMessage());
+                allModel.addElement("Process " + p.getNumber() +": " + p.getState() + " " + p.getTotalCycles() + " " + p.getTotalMem() + " " + p.getPriority() + " " + p.getResource().getMessage());
             } else if(p.getState().equals("READY")){
-                readyModel.addElement("Process " + p.getNumber() +": " + p.getState() + " " + p.getTotalCycles() + " " + p.getTotalMem());
-                allModel.addElement("Process " + p.getNumber() +": " + p.getState() + " " + p.getTotalCycles() + " " + p.getTotalMem());
+                readyModel.addElement("Process " + p.getNumber() +": " + p.getState() + " " + p.getTotalCycles() + " " + p.getTotalMem() + " " + p.getPriority() + " " + p.getResource().getMessage());
+                allModel.addElement("Process " + p.getNumber() +": " + p.getState() + " " + p.getTotalCycles() + " " + p.getTotalMem() + " " + p.getPriority() + " " + p.getResource().getMessage());
             } else {
-                allModel.addElement("Process " + p.getNumber() +": " + p.getState() + " " + p.getTotalCycles() + " " + p.getTotalMem());
+                allModel.addElement("Process " + p.getNumber() +": " + p.getState() + " " + p.getTotalCycles() + " " + p.getTotalMem() + " " + p.getPriority() + " " + p.getResource().getMessage());
             }
         }
         double sum = 0;
@@ -129,7 +129,7 @@ public class mainGUI extends JFrame{
             ProcessList.Process p = pcb.getTerminatedList().get(i);
             sum += p.getTurnAroundTime();
             sum2 += p.getWaitTime();
-            allModel.addElement("Process " + p.getNumber() +": " + p.getState() + " " + p.getTotalCycles() + " " + "0 "+ format.format(p.getTurnAroundTime()/1000.0));
+            allModel.addElement("Process " + p.getNumber() +": " + p.getState() + " " + p.getTotalCycles() + " " + "0 " + " " + p.getPriority() + " " + p.getResource().getMessage() + " " + format.format(p.getTurnAroundTime()/1000.0));
         }
 
         if(pcb.getTerminatedList().size() != 0) {
@@ -149,18 +149,18 @@ public class mainGUI extends JFrame{
         DefaultListModel readyModel = new DefaultListModel();
         DefaultListModel waitModel = new DefaultListModel();
 
-        allModel.addElement("Process #:| State | Remaining Cycles | Total Mem | Turn Around Time (seconds)");
+        allModel.addElement("Process #:| State | Remaining Cycles | Total Mem | Priority | Message from resource | Turn Around Time (seconds)");
         int n = pcb2.getList().size();
         for(int i = 0; i<n; i++){
             ProcessList.Process p = pcb2.getList().get(i);
             if(p.getState().equals("WAITING")){
-                waitModel.addElement("Process " + p.getNumber() +": " + p.getState() + " " + p.getTotalCycles());
-                allModel.addElement("Process " + p.getNumber() +": " + p.getState() + " " + p.getTotalCycles());
+                waitModel.addElement("Process " + p.getNumber() +": " + p.getState() + " " + p.getTotalCycles() + " " + p.getTotalMem() + " " + p.getPriority() + " " + p.getResource().getMessage());
+                allModel.addElement("Process " + p.getNumber() +": " + p.getState() + " " + p.getTotalCycles() + " " + p.getTotalMem() + " " + p.getPriority() + " " + p.getResource().getMessage());
             } else if(p.getState().equals("READY")){
-                readyModel.addElement("Process " + p.getNumber() +": " + p.getState() + " " + p.getTotalCycles());
-                allModel.addElement("Process " + p.getNumber() +": " + p.getState() + " " + p.getTotalCycles());
+                readyModel.addElement("Process " + p.getNumber() +": " + p.getState() + " " + p.getTotalCycles() + " " + p.getTotalMem() + " " + p.getPriority() + " " + p.getResource().getMessage());
+                allModel.addElement("Process " + p.getNumber() +": " + p.getState() + " " + p.getTotalCycles() + " " + p.getTotalMem() + " " + p.getPriority() + " " + p.getResource().getMessage());
             } else {
-                allModel.addElement("Process " + p.getNumber() +": " + p.getState() + " " + p.getTotalCycles() + " " + p.getTotalMem());
+                allModel.addElement("Process " + p.getNumber() +": " + p.getState() + " " + p.getTotalCycles() + " " + p.getTotalMem() + " " + p.getPriority() + " " + p.getResource().getMessage());
             }
         }
 
@@ -172,7 +172,7 @@ public class mainGUI extends JFrame{
             ProcessList.Process p = pcb2.getTerminatedList().get(i);
             sum += p.getTurnAroundTime();
             sum2 += p.getWaitTime();
-            allModel.addElement("Process " + p.getNumber() +": " + p.getState() + " " + p.getTotalCycles() + " " + "0 "+ format.format(p.getTurnAroundTime()/1000.0));
+            allModel.addElement("Process " + p.getNumber() +": " + p.getState() + " " + p.getTotalCycles() + " " + "0 " + " " + p.getPriority() + " " + p.getResource().getMessage() + " " + format.format(p.getTurnAroundTime()/1000.0));
         }
         if(n != 0) {
             sum /= n;

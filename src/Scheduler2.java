@@ -55,14 +55,12 @@ public class Scheduler2 extends Thread {
                                 p.nextTask();
                                 break;
                             } else if(t.getTaskName().equals("m1")){
-                                if(0+1<list.getList().size()) {
-                                    ProcessList.Task temp = list.getList().get(0 + 1).getCurrentTask();
-                                    temp.setTime(temp.getTime() + 30);
+                                if(1<list.getList().size()) {
+                                    list.getList().get(1).setResource(p.getResource());
                                 }
                             } else if(t.getTaskName().equals("m2")){
-                                if(list.getList().size()-1>0) {
-                                    ProcessList.Task temp = list.getList().get(list.getList().size() - 1).getCurrentTask();
-                                    temp.setTime(temp.getTime() + 100);
+                                if(list.getList().size() - 1 > 0) {
+                                    list.getList().get(list.getList().size() - 1).getResource().setMessage("Hello");
                                 }
                             }
 

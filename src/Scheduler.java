@@ -92,8 +92,8 @@ public class Scheduler extends Thread {
                         list.getList().get(i + 1).setResource(p.getResource());
                     }
                 } else if(t.getTaskName().equals("m2")){
-                    if(list.getList().size()+1>0) {
-                        list.getList().get(i + 1).getResource().setMessage("Hello");
+                    if(list.getList().size() - 1 > 0) {
+                        list.getList().get(list.getList().size() - 1).getResource().setMessage("Hello");
                     }
                 }
 
