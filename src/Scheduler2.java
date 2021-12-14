@@ -91,9 +91,9 @@ public class Scheduler2 extends Thread {
                                     semaphore = 1;
                                 }
                             }
-                            int timeLeft = t.getTime() - 20;
+                            int timeLeft = t.getTime() - 1;
                             if (timeLeft == 0) {
-                                cycleCount += 20;
+                                cycleCount += 1;
                                 if (!p.nextTask()) {
                                     p.updateState("TERMINATED");
                                     Date date = new Date();
@@ -106,7 +106,7 @@ public class Scheduler2 extends Thread {
                                     t = p.getCurrentTask();
                                     t.setTime(t.getTime() + timeLeft);
                                     p.updateState("READY");
-                                    cycleCount += 20;
+                                    cycleCount += 1;
                                 } else {
                                     p.updateState("TERMINATED");
                                     cycleCount -= timeLeft;
@@ -116,15 +116,15 @@ public class Scheduler2 extends Thread {
                             } else {
                                 t.setTime(timeLeft);
                                 p.updateState("WAITING");
-                                cycleCount += 20;
+                                cycleCount += 1;
                             }
 
                         }
                         case "RUNNING" -> {
                             ProcessList.Task t = p.getCurrentTask();
-                            int timeLeft = t.getTime() - 20;
+                            int timeLeft = t.getTime() - 1;
                             if (timeLeft == 0) {
-                                cycleCount += 20;
+                                cycleCount += 1;
                                 if (!p.nextTask()) {
                                     p.updateState("TERMINATED");
                                     Date date = new Date();
@@ -138,7 +138,7 @@ public class Scheduler2 extends Thread {
                                     t = p.getCurrentTask();
                                     t.setTime(t.getTime() + timeLeft);
                                     p.updateState("READY");
-                                    cycleCount += 20;
+                                    cycleCount += 1;
                                 } else {
                                     p.updateState("TERMINATED");
                                     cycleCount -= timeLeft;
@@ -148,7 +148,7 @@ public class Scheduler2 extends Thread {
                             } else {
                                 t.setTime(timeLeft);
                                 p.updateState("READY");
-                                cycleCount += 20;
+                                cycleCount += 1;
                             }
                             runningProc = 0;
                         }
@@ -163,7 +163,7 @@ public class Scheduler2 extends Thread {
                     }
                     main.updateList2();
                     try {
-                        Thread.sleep(2);
+                        Thread.sleep(1);
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }

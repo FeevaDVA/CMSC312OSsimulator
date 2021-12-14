@@ -55,12 +55,12 @@ public class FirstComeThread extends Thread{
                                 p.nextTask();
                                 break;
                             } else if(t.getTaskName().equals("m1")){
-                                if(1<list.getList().size()) {
-                                    list.getList().get(1).setResource(p.getResource());
+                                if(1<list.getFirstCome().size()) {
+                                    list.getFirstCome().get(1).setResource(p.getResource());
                                 }
                             } else if(t.getTaskName().equals("m2")){
-                                if(list.getList().size() - 1 > 0) {
-                                    list.getList().get(list.getList().size() - 1).getResource().setMessage("Hello");
+                                if(list.getFirstCome().size() - 1 > 0) {
+                                    list.getFirstCome().get(list.getFirstCome().size() - 1).getResource().setMessage("Hello");
                                 }
                             }
                             if (p.isParent()) {
